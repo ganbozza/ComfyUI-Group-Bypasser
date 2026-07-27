@@ -314,18 +314,7 @@ function refreshNode(node) {
   if (!isTargetNodeInstance(node)) {
     return;
   }
-  /*
-  // ── Ensure instance properties exist with empty defaults ────────────────────
-  node.properties ??= {};
-  if (node.properties[PROP_ALTS]  === undefined) node.properties[PROP_ALTS]  = "";
 
-  // ── Register property types on the class so the Properties panel shows them -
-  //    The "@propertyName" static convention is used by rgthree's base node.
-  //const NodeClass = Object.getPrototypeOf(node)?.constructor;
-  //if (NodeClass) {
-   // if (!NodeClass[`@${PROP_ALTS}`])  NodeClass[`@${PROP_ALTS}`]  = { type: "string" };
-  //}    
-  */
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
   const altStore = ensureAltStore(node);
