@@ -11,7 +11,6 @@ const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
   numeric: true,
 });
-//const PROP_ALTS  = "group_alternates";
 
 function queueRefresh(node, force = false) {
   if (force) {
@@ -156,23 +155,53 @@ function collectGroupsByTitle(node) {
       if (!deduped.has(key)) {
         deduped.set(key, {
           key,
-          title,
+          title,          
           groups: [],
+          alt_groups: []
         });
       }
       deduped.get(key).groups.push({ group, graph });
     }
   }
 
-  deduped.forEach((val, key) => {
-    val.forEach((key, title, groups) => {
-      console.log(title);
+  const alts  = parseSets(node.properties?.[ALT_KEY]  || "");
+  if(map.length>0)
+    deduped.forEach((val, key) => {
+      if(alts.has(val.title))
+      {
+        this.key.alt_groups.push(alts.get(title))
+      }
     });
-  });
-  
+
   return Array.from(deduped.values()).sort(
     (a, b) => ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
   );
+}
+
+function parseSets(str) {
+  const map = new Map();
+  if (!str?.trim()) return map;
+
+  for (const part of str.split(",")) {
+    // Split on ":" to get every member of this set
+    const members = part.split(":").map((s) => s.trim()).filter(Boolean);
+    if (members.length < 2) continue; // need at least a pair
+
+    for (let i = 0; i < members.length; i++) {
+      const member = members[i];
+      const others = members.filter((_, j) => j !== i);
+
+      if (map.has(member)) {
+        const entry = map.get(member);
+        for (const o of others) {
+          if (!entry.includes(o)) entry.push(o);
+        }
+      } else {
+        map.set(member, others) ;
+      }
+    }
+  }
+  return map;
 }
 
 function ensureStateStore(node) {
