@@ -5,12 +5,13 @@ const NODE_DISPLAY_NAME = "Group Bypasser";
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
+const ALT_KEY = "group_alternates";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
   numeric: true,
 });
-const PROP_ALTS  = "groupAlternates";
+//const PROP_ALTS  = "group_alternates";
 
 function queueRefresh(node, force = false) {
   if (force) {
@@ -178,6 +179,15 @@ function ensureStateStore(node) {
   return node.properties[STATE_KEY];
 }
 
+function ensureAltStore(node) {
+  if (!node.properties || typeof node.properties !== "object") {
+    node.properties = {};
+  }
+  if (!node.properties[ALT_KEY] || typeof node.properties[ALT_KEY] !== "String") {
+    node.properties[ALT_KEY] = {};
+  }
+  return node.properties[ALT_KEY];
+}
 
 function findWidget(node, name) {
   return (node.widgets || []).find((widget) => widget.name === name);
@@ -304,6 +314,7 @@ function refreshNode(node) {
   if (!isTargetNodeInstance(node)) {
     return;
   }
+  /*
   // ── Ensure instance properties exist with empty defaults ────────────────────
   node.properties ??= {};
   if (node.properties[PROP_ALTS]  === undefined) node.properties[PROP_ALTS]  = "";
@@ -314,8 +325,10 @@ function refreshNode(node) {
   //if (NodeClass) {
    // if (!NodeClass[`@${PROP_ALTS}`])  NodeClass[`@${PROP_ALTS}`]  = { type: "string" };
   //}    
+  */
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
+  const altStore = ensureAltStore(node);
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
