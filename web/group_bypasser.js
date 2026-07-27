@@ -219,7 +219,7 @@ function ensureAltStore(node) {
   if (!node.properties || typeof node.properties !== "object") {
     node.properties = {};
   }
-  if (!node.properties[ALT_KEY] || typeof node.properties[ALT_KEY] !== "string") {
+  if (typeof node.properties[ALT_KEY] !== "string") {
     node.properties[ALT_KEY] = "";
   }
   return node.properties[ALT_KEY];
