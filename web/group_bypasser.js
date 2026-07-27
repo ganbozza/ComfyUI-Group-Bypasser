@@ -165,13 +165,14 @@ function collectGroupsByTitle(node) {
   }
 
   const alts  = parseSets(node.properties?.[ALT_KEY]  || "");
-  if(map.length>0)
+  if(map.length>0) {
     deduped.forEach((val, key) => {
       if(alts.has(val.title))
       {
         this.key.alt_groups.push(alts.get(title))
       }
     });
+  }
 
   return Array.from(deduped.values()).sort(
     (a, b) => ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
