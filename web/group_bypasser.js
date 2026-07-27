@@ -169,7 +169,7 @@ function collectGroupsByTitle(node) {
     deduped.forEach((val, key) => {
       if(alts.has(val.title))
       {
-        this.key.alt_groups.push(alts.get(title))
+        this.key.alt_groups.push(alts.get(title));
       }
     });
   }
