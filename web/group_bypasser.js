@@ -169,7 +169,7 @@ function collectGroupsByTitle(node) {
     deduped.forEach((val, key) => {
       if(alts.has(val.title))
       {
-         deduped.get(key).alt_groups.push(alts.get(val.title));
+         deduped.get(key).alt_groups.concat(alts.get(val.title));
       }
     });
   }
@@ -214,7 +214,7 @@ function ensureStateStore(node) {
   }
   return node.properties[STATE_KEY];
 }
-
+/*
 function ensureAltStore(node) {
   if (!node.properties || typeof node.properties !== "object") {
     node.properties = {};
@@ -224,7 +224,7 @@ function ensureAltStore(node) {
   }
   return node.properties[ALT_KEY];
 }
-
+*/
 function findWidget(node, name) {
   return (node.widgets || []).find((widget) => widget.name === name);
 }
@@ -328,6 +328,11 @@ function syncWidgets(node, groupsByTitle, stateStore) {
       applyModeToGroupTitle(node, entry, targetBypassed);
     }
     widget.value = targetBypassed;
+
+    if(entry.alt_groups.length>0)
+    {
+      
+    }
   }
 }
 
@@ -353,7 +358,7 @@ function refreshNode(node) {
 
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
-  const altStore = ensureAltStore(node);
+  //const altStore = ensureAltStore(node);
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
