@@ -164,9 +164,9 @@ function collectGroupsByTitle(node) {
     }
   }
 
-  for (const dd of deduped) {
-   console.log(dd.title);  
-  }
+  deduped.forEach([key, title, groups], key)=> {
+    console.log(title);    
+  });
   
   return Array.from(deduped.values()).sort(
     (a, b) => ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
