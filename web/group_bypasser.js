@@ -5,6 +5,7 @@ const NODE_DISPLAY_NAME = "Group Bypasser";
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
+const ALT_KEY = "groupAlternates";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
@@ -177,6 +178,16 @@ function ensureStateStore(node) {
   return node.properties[STATE_KEY];
 }
 
+function ensureAltStore(node) {
+  if (!node.properties || typeof node.properties !== "String") {
+    node.properties = {};
+  }
+  if (!node.properties[ALT_KEY] || typeof node.properties[ALT_KEY] !== "String") {
+    node.properties[ALT_KEY] = {};
+  }
+  return node.properties[ALT_KEY];  
+}
+
 function findWidget(node, name) {
   return (node.widgets || []).find((widget) => widget.name === name);
 }
@@ -305,6 +316,7 @@ function refreshNode(node) {
 
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
+  const altStore = ensureAltStore(node);
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
@@ -405,17 +417,7 @@ app.registerExtension({
     const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
     const originalOnConfigure = nodeType.prototype.onConfigure;
 
-      // ── Ensure instance properties exist with empty defaults ────────────────────
-    nodeType.properties ??= {};
-    if (nodeType.properties[PROP_ALTS]  === undefined) nodeType.properties[PROP_ALTS]  = "";
-  
-    // ── Register property types on the class so the Properties panel shows them -
-    //    The "@propertyName" static convention is used by rgthree's base node.
-    const NodeClass = Object.getPrototypeOf(nodeType)?.constructor;
-    if (NodeClass) {
-      if (!NodeClass[`@${PROP_ALTS}`])  NodeClass[`@${PROP_ALTS}`]  = { type: "string" };
-    }    
-    nodeType.prototype.onNodeCreated = function () {
+      nodeType.prototype.onNodeCreated = function () {
       const result = originalOnNodeCreated?.apply(this, arguments);
       bindNode(this);
       queueRefresh(this, true);
