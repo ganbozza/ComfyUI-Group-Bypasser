@@ -10,7 +10,7 @@ const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
   numeric: true,
 });
-const PROP_LINKS = "groupLinks";
+const PROP_ALTS  = "groupAlternates";
 
 function queueRefresh(node, force = false) {
   if (force) {
