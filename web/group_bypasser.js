@@ -165,7 +165,7 @@ function collectGroupsByTitle(node) {
   }
 
   const alts  = parseSets(node.properties?.[ALT_KEY]  || "");
-  if(map.length>0) {
+  if(alts.length>0) {
     deduped.forEach((val, key) => {
       if(alts.has(val.title))
       {
