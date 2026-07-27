@@ -333,7 +333,7 @@ function syncWidgets(node, groupsByTitle, stateStore) {
     {
        for(const ag of entry.alt_groups)
        {
-          stateStore[ag] = targetBypassed;
+          stateStore[keyForTitle(ag)] = targetBypassed;
        }
     }
   }
