@@ -164,7 +164,7 @@ function collectGroupsByTitle(node) {
     }
   }
 
-  deduped.forEach([key, title, groups], key)=> {
+  deduped.forEach(([key, title, groups], key) => {
     console.log(title);    
   });
   
