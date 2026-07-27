@@ -184,7 +184,7 @@ function ensureAltStore(node) {
     node.properties = {};
   }
   if (!node.properties[ALT_KEY] || typeof node.properties[ALT_KEY] !== "String") {
-    node.properties[ALT_KEY] = {};
+    node.properties[ALT_KEY] = "";
   }
   return node.properties[ALT_KEY];
 }
