@@ -169,9 +169,9 @@ function collectGroupsByTitle(node) {
     deduped.forEach((val, key) => {
       if(alts.has(val.title))
       {
-        this.key.alt_groups.push(alts.get(title));
+         deduped.get(key).alt_groups.push(alts.get(title));
       }
-    }.bind(this));
+    });
   }
 
   return Array.from(deduped.values()).sort(
