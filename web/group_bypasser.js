@@ -171,7 +171,7 @@ function collectGroupsByTitle(node) {
       {
         this.key.alt_groups.push(alts.get(title));
       }
-    });
+    }, this);
   }
 
   return Array.from(deduped.values()).sort(
