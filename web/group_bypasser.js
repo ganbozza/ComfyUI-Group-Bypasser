@@ -188,8 +188,8 @@ function parseSets(str) {
     const members = part.split(":").map((s) => s.trim()).filter(Boolean);
     if (members.length < 2) continue; // need at least a pair
 
-    for (let i = 0; i < members.length; i++) {
-      const member = members[i];
+    //for (let i = 0; i < members.length; i++) {
+      const member = members[0];
       const others = members.filter((_, j) => j !== i);
 
       if (map.has(member)) {
@@ -200,7 +200,7 @@ function parseSets(str) {
       } else {
         map.set(member, others) ;
       }
-    }
+    //}
   }
   return map;
 }
