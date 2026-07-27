@@ -164,8 +164,10 @@ function collectGroupsByTitle(node) {
     }
   }
 
-  deduped.forEach(([key, title, groups], key) => {
-    console.log(title);    
+  deduped.forEach((val, key) => {
+    val.forEach((key, title, groups) => {
+      console.log(title);
+    });
   });
   
   return Array.from(deduped.values()).sort(
