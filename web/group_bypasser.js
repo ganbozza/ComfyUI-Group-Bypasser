@@ -331,7 +331,10 @@ function syncWidgets(node, groupsByTitle, stateStore) {
 
     if(entry.alt_groups.length>0)
     {
-      
+       for(const ag of entry.alt_groups)
+       {
+          stateStore[ag] = targetBypassed;
+       }
     }
   }
 }
