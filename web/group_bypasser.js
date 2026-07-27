@@ -404,6 +404,16 @@ app.registerExtension({
     const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
     const originalOnConfigure = nodeType.prototype.onConfigure;
 
+      // ── Ensure instance properties exist with empty defaults ────────────────────
+    nodeType.properties ??= {};
+    if (nodeType.properties[PROP_ALTS]  === undefined) nodeType.properties[PROP_ALTS]  = "";
+  
+    // ── Register property types on the class so the Properties panel shows them -
+    //    The "@propertyName" static convention is used by rgthree's base node.
+    const NodeClass = Object.getPrototypeOf(nodeType)?.constructor;
+    if (NodeClass) {
+      if (!NodeClass[`@${PROP_ALTS}`])  NodeClass[`@${PROP_ALTS}`]  = { type: "string" };
+    }    
     nodeType.prototype.onNodeCreated = function () {
       const result = originalOnNodeCreated?.apply(this, arguments);
       bindNode(this);
