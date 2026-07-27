@@ -190,7 +190,7 @@ function parseSets(str) {
 
     //for (let i = 0; i < members.length; i++) {
       const member = members[0];
-      const others = members.filter((_, j) => j !== i);
+      const others = members.filter((_, j) => j !== 0);
 
       if (map.has(member)) {
         const entry = map.get(member);
