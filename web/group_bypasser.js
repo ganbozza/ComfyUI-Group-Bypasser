@@ -217,17 +217,19 @@ function ensureStateStore(node) {
   }
   return node.properties[STATE_KEY];
 }
-/*
-function ensureAltStore(node) {
+
+function ensureAltExclStore(node) {
   if (!node.properties || typeof node.properties !== "object") {
     node.properties = {};
   }
   if (typeof node.properties[ALT_KEY] !== "string") {
     node.properties[ALT_KEY] = "";
   }
-  return node.properties[ALT_KEY];
+  if (typeof node.properties[EXCLUDE_KEY] !== "string") {
+    node.properties[EXCLUDE_KEY] = "";
+  }
 }
-*/
+
 function findWidget(node, name) {
   return (node.widgets || []).find((widget) => widget.name === name);
 }
@@ -364,7 +366,7 @@ function refreshNode(node) {
 
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
-  //const altStore = ensureAltStore(node);
+  ensureAltExclStore();
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
