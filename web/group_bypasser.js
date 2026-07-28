@@ -152,15 +152,14 @@ function collectGroupsByTitle(node) {
     for (const group of sourceGroups) {
       const title = normalizeTitle(group?.title);
       //if ((!title) || (exclude_groups.includes(group?.title))) {
-      if ((!title) {
+      if (!title) {
         continue;
       }
       try {
           if (!new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
               continue;
           }
-      }
-      catch (e) {
+      } catch (e) {
           console.error(e);
           continue;
       }
