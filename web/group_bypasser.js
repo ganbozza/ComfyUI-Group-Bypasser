@@ -147,7 +147,7 @@ function collectGroupsByTitle(node) {
         ? graph.groups
         : [];
 
-    exclude_groups = []; //node.properties?.[EXCLUDE_KEY].split(",");
+    const exclude_groups = []; //node.properties?.[EXCLUDE_KEY].split(",");
     
     for (const group of sourceGroups) {
       const title = normalizeTitle(group?.title);
