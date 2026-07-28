@@ -156,7 +156,7 @@ function collectGroupsByTitle(node) {
         continue;
       }
       try {
-          if (!new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
+          if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
               continue;
           }
       } catch (e) {
