@@ -364,9 +364,9 @@ function refreshNode(node) {
     return;
   }
 
+  ensureAltExclStore(node);
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
-  ensureAltExclStore(node);
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
