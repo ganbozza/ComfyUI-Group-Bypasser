@@ -254,7 +254,7 @@ function ensurePropertiesStore(node) {
   if (typeof node.properties[EXCLUDE_KEY] !== "string") {
     node.properties[EXCLUDE_KEY] = "";
   }
-  if (typeof node.properties[EXCLUDE_KEY] !== "string") {
+  if (typeof node.properties[MATCH_KEY] !== "string") {
     node.properties[MATCH_KEY] = "";
   }  
 }
