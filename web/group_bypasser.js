@@ -6,6 +6,7 @@ const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
 const ALT_KEY = "group_alternates";
+const EXCLUDE_KEY = "group_excludes";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
@@ -146,9 +147,11 @@ function collectGroupsByTitle(node) {
         ? graph.groups
         : [];
 
+    exclude_groups = node.properties?.[EXCLUDE_KEY].split(",");
+    
     for (const group of sourceGroups) {
       const title = normalizeTitle(group?.title);
-      if (!title) {
+      if ((!title) || (exclude_groups.has(group?.title))) {
         continue;
       }
       const key = keyForTitle(title);
