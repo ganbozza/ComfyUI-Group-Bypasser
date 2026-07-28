@@ -1,3 +1,21 @@
+/*
+ * ── CONFIGURATION ─────────────────────────────────────────────────────────────
+ * Right-click a Groups Bypasser node → "Properties" or
+ * "Properties Panel" and fill in any/all of the new fields.
+ *
+ * Each property accepts comma-separated sets. Within a set, group names are
+ * separated by colons. Sets may contain TWO OR MORE groups:
+ *
+ *
+ *   Alternating Group — comma-separated sets separated by ":"
+ *                     Example:  "Load Video:Load Image:Load Webcam"
+ *                               "Save Video:Save Image, Mode A:Mode B:Mode C"
+ *                     Effect:   Enabling any member disables all others in
+ *                               the set (radio-button style). Disabling the
+ *                               active member enables the NEXT member in the
+ *                               defined order (circularly), so at least one
+ *                               is always ON. 
+*/
 import { app } from "../../scripts/app.js";
 
 const NODE_NAME = "ComfyUI-Group-Bypasser";
