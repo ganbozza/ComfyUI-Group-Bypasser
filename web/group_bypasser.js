@@ -6,6 +6,7 @@ const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
 const ALT_KEY = "group_alternates";
+const EXCLUDE_KEY = "group_excludes";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
@@ -146,10 +147,21 @@ function collectGroupsByTitle(node) {
         ? graph.groups
         : [];
 
+    //const exclude_groups = node.properties?.[EXCLUDE_KEY].split(",");
+    
     for (const group of sourceGroups) {
       const title = normalizeTitle(group?.title);
+      //if ((!title) || (exclude_groups.includes(group?.title))) {
       if (!title) {
         continue;
+      }
+      try {
+          if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
+              continue;
+          }
+      } catch (e) {
+          console.error(e);
+          continue;
       }
       const key = keyForTitle(title);
       if (!deduped.has(key)) {
@@ -214,17 +226,19 @@ function ensureStateStore(node) {
   }
   return node.properties[STATE_KEY];
 }
-/*
-function ensureAltStore(node) {
+
+function ensureAltExclStore(node) {
   if (!node.properties || typeof node.properties !== "object") {
     node.properties = {};
   }
   if (typeof node.properties[ALT_KEY] !== "string") {
     node.properties[ALT_KEY] = "";
   }
-  return node.properties[ALT_KEY];
+  if (typeof node.properties[EXCLUDE_KEY] !== "string") {
+    node.properties[EXCLUDE_KEY] = "";
+  }
 }
-*/
+
 function findWidget(node, name) {
   return (node.widgets || []).find((widget) => widget.name === name);
 }
@@ -359,12 +373,9 @@ function refreshNode(node) {
     return;
   }
 
+  ensureAltExclStore(node);
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
-  //const altStore = ensureAltStore(node);
-  if (typeof node.properties[ALT_KEY] !== "string") {
-    node.properties[ALT_KEY] = "";
-  }
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
