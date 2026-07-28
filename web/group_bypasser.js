@@ -5,6 +5,7 @@ const NODE_DISPLAY_NAME = "Group Bypasser";
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
+const ALT_KEY = "group_alternates";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
@@ -130,7 +131,8 @@ function getGroupNodes(group, graph) {
 }
 
 function collectGroupsByTitle(node) {
-  const rootGraph = getCurrentGraph(node);
+  //const rootGraph = getCurrentGraph(node);
+  const rootGraph = app.graph;
   if (!rootGraph) {
     return [];
   }
@@ -153,17 +155,54 @@ function collectGroupsByTitle(node) {
       if (!deduped.has(key)) {
         deduped.set(key, {
           key,
-          title,
+          title,          
           groups: [],
+          alt_groups: []
         });
       }
       deduped.get(key).groups.push({ group, graph });
     }
   }
 
+  const alts  = parseSets(node.properties?.[ALT_KEY]  || "");
+  if(alts.size>0) {
+    deduped.forEach((val, key) => {
+      if(alts.has(val.title))
+      {
+         deduped.get(key).alt_groups = alts.get(val.title);
+      }
+    });
+  }
+
   return Array.from(deduped.values()).sort(
     (a, b) => ALPHABETICAL_COLLATOR.compare(a.title, b.title) || a.key.localeCompare(b.key),
   );
+}
+
+function parseSets(str) {
+  const map = new Map();
+  if (!str?.trim()) return map;
+
+  for (const part of str.split(",")) {
+    // Split on ":" to get every member of this set
+    const members = part.split(":").map((s) => s.trim()).filter(Boolean);
+    if (members.length < 2) continue; // need at least a pair
+
+    //for (let i = 0; i < members.length; i++) {
+      const member = members[0];
+      const others = members.filter((_, j) => j !== 0);
+
+      if (map.has(member)) {
+        const entry = map.get(member);
+        for (const o of others) {
+          if (!entry.includes(o)) entry.push(o);
+        }
+      } else {
+        map.set(member, others) ;
+      }
+    //}
+  }
+  return map;
 }
 
 function ensureStateStore(node) {
@@ -175,7 +214,17 @@ function ensureStateStore(node) {
   }
   return node.properties[STATE_KEY];
 }
-
+/*
+function ensureAltStore(node) {
+  if (!node.properties || typeof node.properties !== "object") {
+    node.properties = {};
+  }
+  if (typeof node.properties[ALT_KEY] !== "string") {
+    node.properties[ALT_KEY] = "";
+  }
+  return node.properties[ALT_KEY];
+}
+*/
 function findWidget(node, name) {
   return (node.widgets || []).find((widget) => widget.name === name);
 }
@@ -279,6 +328,14 @@ function syncWidgets(node, groupsByTitle, stateStore) {
       applyModeToGroupTitle(node, entry, targetBypassed);
     }
     widget.value = targetBypassed;
+
+    if(entry.alt_groups.length>0)
+    {
+       for(const ag of entry.alt_groups)
+       {
+          stateStore[keyForTitle(ag)] = !targetBypassed;
+       }
+    }
   }
 }
 
@@ -304,6 +361,7 @@ function refreshNode(node) {
 
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
+  //const altStore = ensureAltStore(node);
   const signature = computeSignature(groupsByTitle);
   const forceRefresh = Boolean(node.__groupBypasserForceRefresh);
   if (forceRefresh) {
@@ -404,7 +462,7 @@ app.registerExtension({
     const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
     const originalOnConfigure = nodeType.prototype.onConfigure;
 
-    nodeType.prototype.onNodeCreated = function () {
+      nodeType.prototype.onNodeCreated = function () {
       const result = originalOnNodeCreated?.apply(this, arguments);
       bindNode(this);
       queueRefresh(this, true);
