@@ -5,8 +5,9 @@ const NODE_DISPLAY_NAME = "Group Bypasser";
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
-const ALT_KEY = "group_alternates";
-const EXCLUDE_KEY = "group_excludes";
+const ALT_KEY = "Alternating Group";
+const EXCLUDE_KEY = "Exclude Group";
+const MATCH_KEY = "Match Title";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
@@ -146,17 +147,15 @@ function collectGroupsByTitle(node) {
       : Array.isArray(graph.groups)
         ? graph.groups
         : [];
-
-    //const exclude_groups = node.properties?.[EXCLUDE_KEY].split(",");
-    
+   
     for (const group of sourceGroups) {
       const title = normalizeTitle(group?.title);
-      //if ((!title) || (exclude_groups.includes(group?.title))) {
       if (!title) {
         continue;
       }
       try {
-          if (new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) {
+          if ((new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) || 
+              (!new RegExp(node.properties?.[MATCH_KEY], "i").exec(group?.title))) {
               continue;
           }
       } catch (e) {
@@ -227,7 +226,7 @@ function ensureStateStore(node) {
   return node.properties[STATE_KEY];
 }
 
-function ensureAltExclStore(node) {
+function ensurePropertiesStore(node) {
   if (!node.properties || typeof node.properties !== "object") {
     node.properties = {};
   }
@@ -237,6 +236,9 @@ function ensureAltExclStore(node) {
   if (typeof node.properties[EXCLUDE_KEY] !== "string") {
     node.properties[EXCLUDE_KEY] = "";
   }
+  if (typeof node.properties[EXCLUDE_KEY] !== "string") {
+    node.properties[MATCH_KEY] = "";
+  }  
 }
 
 function findWidget(node, name) {
@@ -373,7 +375,7 @@ function refreshNode(node) {
     return;
   }
 
-  ensureAltExclStore(node);
+  ensurePropertiesStore(node);
   const groupsByTitle = collectGroupsByTitle(node);
   const stateStore = ensureStateStore(node);
   const signature = computeSignature(groupsByTitle);
