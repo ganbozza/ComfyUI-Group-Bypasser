@@ -147,11 +147,11 @@ function collectGroupsByTitle(node) {
         ? graph.groups
         : [];
 
-    const exclude_groups = []; //node.properties?.[EXCLUDE_KEY].split(",");
+    const exclude_groups = node.properties?.[EXCLUDE_KEY].split(",");
     
     for (const group of sourceGroups) {
       const title = normalizeTitle(group?.title);
-      if ((!title) || (exclude_groups.has(group?.title))) {
+      if ((!title) || (exclude_groups.includes(group?.title))) {
         continue;
       }
       const key = keyForTitle(title);
