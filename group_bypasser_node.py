@@ -3,10 +3,7 @@ class ComfyUIGroupBypasser:
     def INPUT_TYPES(cls):
         return {
             "required": {},
-            "optional": {
-                # Dummy hidden input to trigger UI re-renders on the backend side if needed
-                "toggle_feature": ("BOOLEAN", {"default": False, "label_on": "Enabled", "label_off": "Disabled"}),
-            }
+            "optional": {}
         }
 
     RETURN_TYPES = ()
