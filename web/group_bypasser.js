@@ -273,7 +273,12 @@ function applyModeToGroupTitle(node, groupEntry, bypassed) {
 
   const seenNodeIds = new WeakMap();
   const mode = bypassed ? MODE_BYPASS : MODE_ACTIVE;
+  const mode_alt = bypassed ? MODE_ACTIVE : MODE_BYPASS;
 
+   for(const ag of groupEntry.alt_groups) {
+      stateStore[keyForTitle(ag)] = mode_alt;
+   }
+  
   for (const { group, graph } of groupEntry.groups) {
     if (!group || !graph) {
       continue;
@@ -294,7 +299,8 @@ function applyModeToGroupTitle(node, groupEntry, bypassed) {
       targetNode.mode = mode;
     }
     graph.setDirtyCanvas?.(true, true);
-  }
+    
+ }
 }
 
 function resolveBypassFromGroups(node, groupEntry) {
@@ -365,14 +371,6 @@ function syncWidgets(node, groupsByTitle, stateStore) {
       applyModeToGroupTitle(node, entry, targetBypassed);
     }
     widget.value = targetBypassed;
-
-    if(entry.alt_groups.length>0)
-    {
-       for(const ag of entry.alt_groups)
-       {
-          stateStore[keyForTitle(ag)] = !targetBypassed;
-       }
-    }
   }
 }
 
