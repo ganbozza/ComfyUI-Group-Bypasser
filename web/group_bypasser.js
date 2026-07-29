@@ -158,7 +158,9 @@ function collectGroupsByTitle(node) {
   }
 
   const deduped = new Map();
-
+  const exclude_key = node.properties?.[EXCLUDE_KEY];
+  const match_key =node.properties?.[MATCH_KEY];
+  
   for (const graph of collectNestedGraphs(rootGraph)) {
     const sourceGroups = Array.isArray(graph._groups)
       ? graph._groups
@@ -172,8 +174,8 @@ function collectGroupsByTitle(node) {
         continue;
       }
       try {
-          if ((new RegExp(node.properties?.[EXCLUDE_KEY], "i").exec(group?.title)) || 
-              (!new RegExp(node.properties?.[MATCH_KEY], "i").exec(group?.title))) {
+          if (((exclude_key.trim()) && (new RegExp(exclude_key, "i").exec(group?.title))) || 
+              ((match_key.trim()) && (new RegExp(match_key, "i").exec(group?.title)))) {
               continue;
           }
       } catch (e) {
