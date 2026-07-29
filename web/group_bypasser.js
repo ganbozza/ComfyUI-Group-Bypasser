@@ -219,19 +219,17 @@ function parseSets(str) {
     const members = part.split(":").map((s) => s.trim()).filter(Boolean);
     if (members.length < 2) continue; // need at least a pair
 
-    //for (let i = 0; i < members.length; i++) {
-      const member = members[0];
-      const others = members.filter((_, j) => j !== 0);
+    const member = members[0];
+    const others = members.filter((_, j) => j !== 0);
 
-      if (map.has(member)) {
-        const entry = map.get(member);
-        for (const o of others) {
-          if (!entry.includes(o)) entry.push(o);
-        }
-      } else {
-        map.set(member, others) ;
+    if (map.has(member)) {
+      const entry = map.get(member);
+      for (const o of others) {
+        if (!entry.includes(o)) entry.push(o);
       }
-    //}
+    } else {
+      map.set(member, others) ;
+    }
   }
   return map;
 }
@@ -379,7 +377,7 @@ function removeDynamicWidgets(node) {
   let index = 0;
   while ((node.widgets || [])[index]) {
     if (node.widgets[index]?.__groupBypasserDynamic) {
-      node.removeWidget(index);
+      node.removeWidget(node.widgets[0]);
       continue;
     }
     index += 1;
