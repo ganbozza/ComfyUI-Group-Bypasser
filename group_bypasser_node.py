@@ -14,13 +14,8 @@ class ComfyUIGroupBypasser:
     FUNCTION = "noop"
     CATEGORY = "utils"
 
-    def noop(self, toggle_feature):
-       # Process the boolean state dynamically in your backend logic
-        if toggle_feature:
-            result = f"Feature active! Processing"
-        else:
-            result = "Feature inactive."
-        return (result,)
+    def noop(self):
+        return ()
 
 
 NODE_CLASS_MAPPINGS = {
