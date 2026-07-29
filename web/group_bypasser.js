@@ -495,7 +495,7 @@ app.registerExtension({
 
     const originalOnNodeCreated = nodeType.prototype.onNodeCreated;
     const originalOnConfigure = nodeType.prototype.onConfigure;
-    /*
+    
     nodeType.prototype.onNodeCreated = function () {
       const result = originalOnNodeCreated?.apply(this, arguments);
       bindNode(this);
@@ -504,86 +504,7 @@ app.registerExtension({
       setTimeout(() => queueRefresh(this, true), 250);         
       return result;
     };
-    */
-async nodeCreated(node) {
-        if (node.comfyClass === "DynamicToggleNode") {
-            // Find or hide the default config string storage widget
-            const configWidget = node.widgets.find(w => w.name === "toggle_config");
-            if (configWidget) {
-                configWidget.type = "hidden"; // Keep it serialized but hidden
-            }
-
-            // Function to add a native toggle that supports subgraph promotion
-            node.addDynamicToggle = function(name, defaultValue = false) {
-                // We use standard LiteGraph "toggle" instead of a custom UI drawn over the canvas
-                const toggleWidget = node.addWidget("toggle", name, defaultValue, (value) => {
-                    node.updateConfigStorage();
-                });
-                
-                // Expose properties so the native Subgraph exporter safely parses constraints
-                toggleWidget.options = { on: "Enabled", off: "Disabled" };
-                
-                node.updateConfigStorage();
-                node.setDirtyCanvas(true, true); // Force interface refresh
-                return toggleWidget;
-            };
-
-            // Master updater that synchronizes state with Python backend
-            node.updateConfigStorage = function() {
-                const config = {};
-                for (const w of node.widgets) {
-                    if (w.type === "toggle") {
-                        config[w.name] = w.value;
-                    }
-                }
-                if (configWidget) {
-                    configWidget.value = JSON.stringify(config);
-                }
-            };
-
-            // Context Menu Customization to add/remove toggles on the fly
-            const originalGetExtraMenuOptions = node.getExtraMenuOptions;
-            node.getExtraMenuOptions = function(canvas, options) {
-                if (originalGetExtraMenuOptions) {
-                    originalGetExtraMenuOptions.apply(this, arguments);
-                }
-
-                options.push({
-                    content: "➕ Add Toggle Parameter",
-                    callback: () => {
-                        const toggleName = prompt("Enter unique toggle name:");
-                        if (toggleName && !node.widgets.find(w => w.name === toggleName)) {
-                            node.addDynamicToggle(toggleName, false);
-                        }
-                    }
-                });
-
-                options.push({
-                    content: "➖ Remove Toggle Parameter",
-                    callback: () => {
-                        const toggleNames = node.widgets.filter(w => w.type === "toggle").map(w => w.name);
-                        if (toggleNames.length === 0) return;
-                        
-                        const nameToRemove = prompt(`Enter toggle name to delete:\n(${toggleNames.join(", ")})`);
-                        const targetIdx = node.widgets.findIndex(w => w.name === nameToRemove && w.type === "toggle");
-                        if (targetIdx !== -1) {
-                            node.widgets.splice(targetIdx, 1);
-                            node.updateConfigStorage();
-                            node.setDirtyCanvas(true, true);
-                        }
-                    }
-                });
-            };
-
-            // Initialize with a default toggle if empty
-            setTimeout(() => {
-                if (!node.widgets.some(w => w.type === "toggle")) {
-                    node.addDynamicToggle("Bypass_Upscaler", false);
-                    node.addDynamicToggle("Bypass_FaceDetailer", false);
-                }
-            }, 100);
-        }
-    }    
+        
     nodeType.prototype.onConfigure = function () {
       const result = originalOnConfigure?.apply(this, arguments);
       bindNode(this);
