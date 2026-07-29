@@ -127,7 +127,7 @@ function getGroupNodes(group, graph) {
     // Fall through to stale-membership fallback.
   }
 
-  const fromChildren = Array.from(group?._children || []).filter((node) => typeof node?.id === "number");
+  const fromChildren = Array.from(group?._children || []).filter((node) => typeof node?.id === "string");
   if (fromChildren.length) {
     return fromChildren;
   }
@@ -139,7 +139,7 @@ function getGroupNodes(group, graph) {
 
   const [gx, gy, gw, gh] = bounds;
   return (graph._nodes || []).filter((graphNode) => {
-    if (typeof graphNode?.id !== "number") {
+    if (typeof graphNode?.id !== "string") {
       return false;
     }
     const pos = graphNode.pos || [0, 0];
