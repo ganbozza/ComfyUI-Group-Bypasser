@@ -175,7 +175,7 @@ function collectGroupsByTitle(node) {
       }
       try {
           if (((exclude_key.trim()) && (new RegExp(exclude_key, "i").exec(group?.title))) || 
-              ((match_key.trim()) && (new RegExp(match_key, "i").exec(group?.title)))) {
+              ((match_key.trim()) && (!new RegExp(match_key, "i").exec(group?.title)))) {
               continue;
           }
       } catch (e) {
