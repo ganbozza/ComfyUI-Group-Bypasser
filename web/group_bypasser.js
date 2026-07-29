@@ -442,7 +442,10 @@ function refreshNode(node) {
         }
         stateStore[entry.key] = bypassed;
         applyModeToGroupTitle(node, latestEntry, bypassed);
-      },
+      },{ 
+        // Force the configuration options so the Subgraph engine detects it
+        default: false 
+      }
     );
 
     widget.__groupBypasserDynamic = true;
