@@ -273,7 +273,7 @@ function applyModeToGroupTitle(node, groupEntry, bypassed) {
 
   const seenNodeIds = new WeakMap();
   const mode = bypassed ? MODE_BYPASS : MODE_ACTIVE;
-  const mode_alt = bypassed ? MODE_ACTIVE : MODE_BYPASS;
+  const mode_alt = !bypassed;
 
   for(const ag of groupEntry.alt_groups) {
     if (typeof typeof node.properties[STATE_KEY][keyForTitle(ag)]!=="undefined") {
