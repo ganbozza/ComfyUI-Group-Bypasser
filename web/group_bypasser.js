@@ -281,7 +281,7 @@ function applyModeToGroupTitle(node, groupEntry, bypassed) {
       seenNodeIds.set(graph, graphSeenIds);
     }
     for (const targetNode of getGroupNodes(group, graph)) {
-      if (!(targetNode && Number.isInteger(targetNode.id) && targetNode.id >= 0)) {
+      if (!(targetNode && parseInt(targetNode.id) >= 0)) {
         continue;
       }
       if (graphSeenIds.has(targetNode.id)) {
@@ -313,7 +313,7 @@ function resolveBypassFromGroups(node, groupEntry) {
       seenNodeIds.set(graph, graphSeenIds);
     }
     for (const targetNode of getGroupNodes(group, graph)) {
-      if (!(targetNode && Number.isInteger(targetNode.id) && targetNode.id >= 0)) {
+      if (!(targetNode && parseInt(targetNode.id) >= 0)) {
         continue;
       }
       if (graphSeenIds.has(targetNode.id)) {
