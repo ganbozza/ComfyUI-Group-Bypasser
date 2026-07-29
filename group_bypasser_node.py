@@ -1,10 +1,7 @@
 class ComfyUIGroupBypasser:
     @classmethod
     def INPUT_TYPES(cls):
-        return {
-            "required": {},
-            "optional": {}
-        }
+         return {"required": {}}
 
     RETURN_TYPES = ()
     RETURN_NAMES = ()
