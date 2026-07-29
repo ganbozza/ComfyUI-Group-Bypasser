@@ -23,9 +23,9 @@ const NODE_DISPLAY_NAME = "Group Bypasser";
 const MODE_ACTIVE = LiteGraph.ALWAYS;
 const MODE_BYPASS = 4;
 const STATE_KEY = "group_bypasser_states";
-const ALT_KEY = "Alternating Group";
-const EXCLUDE_KEY = "Exclude Group";
-const MATCH_KEY = "Match Title";
+const ALT_KEY = "Alternating_Groups";
+const EXCLUDE_KEY = "Exclude_Groups";
+const MATCH_KEY = "Match_Title";
 const REFRESH_MS = 400;
 const ALPHABETICAL_COLLATOR = new Intl.Collator(undefined, {
   sensitivity: "base",
