@@ -275,8 +275,11 @@ function applyModeToGroupTitle(node, groupEntry, bypassed) {
   const mode = bypassed ? MODE_BYPASS : MODE_ACTIVE;
   const mode_alt = bypassed ? MODE_ACTIVE : MODE_BYPASS;
 
-   for(const ag of groupEntry.alt_groups) {
+ const stateStore = node.properties[STATE_KEY];
+  for(const ag of groupEntry.alt_groups) {
+    if (stateStore) {
       stateStore[keyForTitle(ag)] = mode_alt;
+    }
    }
   
   for (const { group, graph } of groupEntry.groups) {
