@@ -377,7 +377,7 @@ function removeDynamicWidgets(node) {
   let index = 0;
   while ((node.widgets || [])[index]) {
     if (node.widgets[index]?.__groupBypasserDynamic) {
-      node.removeWidget(node.widgets[0]);
+      node.removeWidget(node.widgets[index]);
       continue;
     }
     index += 1;
