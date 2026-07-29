@@ -2,41 +2,25 @@ class ComfyUIGroupBypasser:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": {
-                # We use an internal string config to save state
-                "toggle_config": ("STRING", {"default": "{}"}), 
-            },
+            "required": {},
             "optional": {
                 # Dummy hidden input to trigger UI re-renders on the backend side if needed
-                "refresh_trigger": ("INT", {"default": 0, "min": 0, "max": 999999, "step": 1}),
+                "toggle_feature": ("BOOLEAN", {"default": False, "label_on": "Enabled", "label_off": "Disabled"}),
             }
-            }
+        }
 
-    RETURN_TYPES = ("BOOLEAN", "STRING")
-    RETURN_NAMES = ("is_active", "active_toggles_list")
+    RETURN_TYPES = ()
+    RETURN_NAMES = ()
     FUNCTION = "noop"
     CATEGORY = "utils"
 
-    def noop(self, toggle_config, refresh_trigger=0, **kwargs):
-        # kwargs catches any dynamically added Python inputs or mapped subgraph bindings
-        try:
-            config = json.loads(toggle_config)
-        except Exception:
-            config = {}
-
-        # Merge configuration and kwargs to get accurate boolean values
-        active_toggles = []
-        for key, val in kwargs.items():
-            if val is True:
-                active_toggles.append(key)
-        
-        # If evaluation maps directly to config keys:
-        for key, val in config.items():
-            if val is True and key not in active_toggles:
-                active_toggles.append(key)
-
-        is_active = len(active_toggles) > 0
-        return (is_active, ", ".join(active_toggles))
+    def noop(self, toggle_feature):
+       # Process the boolean state dynamically in your backend logic
+        if toggle_feature:
+            result = f"Feature active! Processing"
+        else:
+            result = "Feature inactive."
+        return (result,)
 
 
 NODE_CLASS_MAPPINGS = {
