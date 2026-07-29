@@ -158,9 +158,10 @@ function collectGroupsByTitle(node) {
   }
 
   const deduped = new Map();
+  /*
   const exclude_key = node.properties?.[EXCLUDE_KEY];
   const match_key =node.properties?.[MATCH_KEY];
-  
+  */
   for (const graph of collectNestedGraphs(rootGraph)) {
     const sourceGroups = Array.isArray(graph._groups)
       ? graph._groups
@@ -173,6 +174,7 @@ function collectGroupsByTitle(node) {
       if (!title) {
         continue;
       }
+      /*
       try {
           if (((exclude_key.trim()) && (new RegExp(exclude_key, "i").exec(group?.title))) || 
               ((match_key.trim()) && (!new RegExp(match_key, "i").exec(group?.title)))) {
@@ -182,6 +184,7 @@ function collectGroupsByTitle(node) {
           console.error(e);
           continue;
       }
+      */
       const key = keyForTitle(title);
       if (!deduped.has(key)) {
         deduped.set(key, {
@@ -419,6 +422,9 @@ function refreshNode(node) {
   node.__groupBypasserSignature = signature;
   removeDynamicWidgets(node);
 
+  const exclude_key = node.properties?.[EXCLUDE_KEY];
+  const match_key =node.properties?.[MATCH_KEY];
+
   for (const entry of groupsByTitle) {
     const widgetName = entry.title;
     const actualBypassed = resolveBypassFromGroups(node, entry);
@@ -429,7 +435,15 @@ function refreshNode(node) {
     if (actualBypassed !== isBypassed) {
       applyModeToGroupTitle(node, entry, isBypassed);
     }
-
+    try {
+        if (((exclude_key.trim()) && (new RegExp(exclude_key, "i").exec(widgetName))) || 
+            ((match_key.trim()) && (!new RegExp(match_key, "i").exec(widgetName)))) {
+            continue;
+        }
+    } catch (e) {
+        console.error(e);
+        continue;
+    }
     const widget = node.addWidget(
       "toggle",
       widgetName,
@@ -442,9 +456,6 @@ function refreshNode(node) {
         }
         stateStore[entry.key] = bypassed;
         applyModeToGroupTitle(node, latestEntry, bypassed);
-      },{ 
-        // Force the configuration options so the Subgraph engine detects it
-        default: false 
       }
     );
 
