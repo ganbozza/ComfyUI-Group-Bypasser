@@ -278,7 +278,8 @@ function applyModeToGroupTitle(node, groupEntry, bypassed) {
   for(const ag of groupEntry.alt_groups) {
     const alt_title = keyForTitle(ag);
     if (typeof node.properties[STATE_KEY][alt_title]!=="undefined") {
-      node.properties[STATE_KEY][keyForTitle(alt_title)] = mode_alt;
+      //node.properties[STATE_KEY][keyForTitle(alt_title)] = mode_alt;
+      applyModeToGroupTitle(node, getEntryByKey(node, alt_title), !bypassed);
     }
    }
   
